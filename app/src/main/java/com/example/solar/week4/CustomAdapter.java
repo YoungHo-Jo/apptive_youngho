@@ -2,8 +2,10 @@ package com.example.solar.week4;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.database.Cursor;
 import android.graphics.BitmapFactory;
 import android.graphics.drawable.Drawable;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.view.PagerAdapter;
 import android.support.v7.app.AppCompatActivity;
@@ -11,6 +13,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
+import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -25,6 +28,8 @@ public class CustomAdapter extends PagerAdapter {
     LayoutInflater inflater;
     private ViewGroup viewGroup = null;
     private ListViewAdapter listViewAdatper = null;
+    private Cursor cursor = null;
+
 
     public CustomAdapter(LayoutInflater inflater)
     {
@@ -52,6 +57,7 @@ public class CustomAdapter extends PagerAdapter {
         switch (position)
         {
             case 0:
+
                 // 새로운 View 객체를 LayoutInflater를 이용해서 생성
                 // 만들어질 view의 설계는 res폴더>>layout폴더>>listview_list_of_friends.xml 레이아웃
                 view = inflater.inflate(R.layout.listview_list_of_friends, null);
@@ -70,11 +76,20 @@ public class CustomAdapter extends PagerAdapter {
 
 
                 // Inserting items
-                for (int i = 0; i < 10; i++)
-                {
-                    adapter.addItem(ContextCompat.getDrawable(view.getContext(), R.drawable.default_profile), "Person " + (i + 1), "state message " + (i + 1));
+//                for (int i = 0; i < 10; i++)
+//                {
+//                    adapter.addItem(ContextCompat.getDrawable(view.getContext(), R.drawable.default_profile), "Person " + (i + 1), "state message " + (i + 1));
+//                }
+
+                final DBHelper dbHelper = new DBHelper(view.getContext(), "Friends.db", null, 1);
+
+                cursor = dbHelper.getReadableDatabase().rawQuery("SELECT * FROM FRIENDS", null);
+                while(cursor.moveToNext()) {
+                    adapter.addItem(ContextCompat.getDrawable(view.getContext(), R.drawable.default_profile),
+                      cursor.getString(1), cursor.getString(2));
                 }
 
+                dbHelper.close();
 
 
                 // Listview click event handler definition
@@ -97,13 +112,6 @@ public class CustomAdapter extends PagerAdapter {
 
                         // Checking that click event is working
                         // Toast.makeText(v.getApplicationContext(), titleStr, Toast.LENGTH_SHORT).show();
-
-                    /*
-                    ImageView personalPic = (ImageView) findViewById(R.id.personalPicLayout);
-                    personalPic.setImageDrawable(iconDrawable);
-
-                    findViewById(R.id.personalLayout).setVisibility(View.VISIBLE);
-                    */
                     }
                 });
 
@@ -132,14 +140,14 @@ public class CustomAdapter extends PagerAdapter {
     //화면에 보이지 않은 View는파괴를 해서 메모리를 관리함.
     //첫번째 파라미터 : ViewPager
     //두번째 파라미터 : 파괴될 View의 인덱스(가장 처음부터 0,1,2,3...)
-    //세번째 파라미터 : 파괴될 객체(더 이상 보이지 않은 View 객체)
-    @Override
-    public void destroyItem(ViewGroup container, int position, Object object) {
-        // TODO Auto-generated method stub
+        //세번째 파라미터 : 파괴될 객체(더 이상 보이지 않은 View 객체)
+        @Override
+        public void destroyItem(ViewGroup container, int position, Object object) {
+            // TODO Auto-generated method stub
 
-        //ViewPager에서 보이지 않는 View는 제거
-        //세번째 파라미터가 View 객체 이지만 데이터 타입이 Object여서 형변환 실시
-        container.removeView((View)object);
+            //ViewPager에서 보이지 않는 View는 제거
+            //세번째 파라미터가 View 객체 이지만 데이터 타입이 Object여서 형변환 실시
+            container.removeView((View)object);
         System.out.println("destroying view! " + position);
 
     }
@@ -154,4 +162,13 @@ public class CustomAdapter extends PagerAdapter {
     public ViewGroup getViewGroup() {return viewGroup;}
     public ListViewAdapter getListViewAdatper() {return listViewAdatper;}
 
+    @Override
+    public int getItemPosition(Object object) {
+        return PagerAdapter.POSITION_NONE;
+    }
+
+    @Override
+    public void notifyDataSetChanged() {
+        super.notifyDataSetChanged();
+    }
 }
