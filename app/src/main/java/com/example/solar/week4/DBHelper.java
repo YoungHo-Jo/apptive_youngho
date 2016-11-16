@@ -42,49 +42,49 @@ public class DBHelper extends SQLiteOpenHelper {
   {
     SQLiteDatabase db = getWritableDatabase();
     // change state message
-    db.execSQL("UPDATE FRIENDS SET state='" + state + "' WHERE item='" + name + "';");
+    db.execSQL("UPDATE FRIENDS SET state='" + state + "' WHERE name='" + name + "';");
     db.close();
   }
-
-  public String getResult()
-  {
-    // 읽기가 가능하게 DB 열기
-    SQLiteDatabase db = getReadableDatabase();
-    String result = "";
-
-    // DB에 있는 데이터를 쉽게 처리하기 위해 Cursor를 사용하여 테이블에 있는 모든 데이터 출력
-    Cursor cursor = db.rawQuery("SELECT * FROM FRIENDS", null);
-    while (cursor.moveToNext()) {
-      result += cursor.getString(0)
-        + " : "
-        + cursor.getString(1)
-        + " | "
-        + cursor.getInt(2)
-        + "원 "
-        + cursor.getString(3)
-        + "\n";
-    }
-
-    return result;
-
-  }
-
-  public String getName()
-  {
-
-    String result = null;
-    SQLiteDatabase db = getReadableDatabase();
-
-    Cursor cursor = db.rawQuery("SELECT * FROM FRIENDS", null);
-    while(cursor.moveToNext())
-    {
-      result = cursor.getString(0);
-    }
-
-
-    return result;
-  }
-
+//
+//  public String getResult()
+//  {
+//    // 읽기가 가능하게 DB 열기
+//    SQLiteDatabase db = getReadableDatabase();
+//    String result = "";
+//
+//    // DB에 있는 데이터를 쉽게 처리하기 위해 Cursor를 사용하여 테이블에 있는 모든 데이터 출력
+//    Cursor cursor = db.rawQuery("SELECT * FROM FRIENDS", null);
+//    while (cursor.moveToNext()) {
+//      result += cursor.getString(0)
+//        + " : "
+//        + cursor.getString(1)
+//        + " | "
+//        + cursor.getInt(2)
+//        + "원 "
+//        + cursor.getString(3)
+//        + "\n";
+//    }
+//
+//    return result;
+//
+//  }
+//
+//  public String getName()
+//  {
+//
+//    String result = null;
+//    SQLiteDatabase db = getReadableDatabase();
+//
+//    Cursor cursor = db.rawQuery("SELECT * FROM FRIENDS", null);
+//    while(cursor.moveToNext())
+//    {
+//      result = cursor.getString(0);
+//    }
+//
+//
+//    return result;
+//  }
+//
 
 
 
